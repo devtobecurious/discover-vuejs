@@ -1,23 +1,59 @@
 <template>
-  <h1>Star wars people</h1>
+  <div>
+    <h1>{{ title }}</h1>
+    <h2>{{ subTitle }}</h2>
+    <ul>
+      <li v-for="item in people" :key="item.id">
+        {{ item.name }}
+      </li>
+    </ul>
 
-  <ul>
-    <li v-for="item in getPeople" :key="item.id">
-      {{ item.id }}
-    </li>
-  </ul>
+    <i>
+      {{ counter }}
+    </i>
+
+    <button @click="increment">Increment</button>
+  </div>
 </template>
 
 <script>
+const peopleStore = {
+  async fetch () {
+    const result = await fetch('https://swapi.dev/api/people')
+    const data = await result.json()
+
+    return data
+  }
+}
+
 export default {
   name: 'PeopleList',
-  props: {
+  props: {},
+  data () {
+    return {
+      title: 'Star wars people',
+      subTitle: 'Amazing',
+      counter: 0,
+      people: []
+    }
+  },
+  created () {
+    this.fetchData()
+  },
+  methods: {
+    increment () {
+      console.info('increment')
+      this.counter++
+    },
+    fetchData () {
+      peopleStore.fetch().then(data => {
+        this.people = data.results
+      })
+    }
   },
   computed: {
     getPeople: function () {
-      return [
-        { id: 1, name: 'coucou' }
-      ]
+      return [{ id: 1, name: 'coucou' }]
     }
   }
 }
