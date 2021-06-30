@@ -2,17 +2,34 @@
   <div>
     <h1>{{ title }}</h1>
     <h2>{{ subTitle }}</h2>
+    {{ testCalling() }}
+    <p v-html="htmlContent"></p>
     <ul>
-      <li v-for="item in people" :key="item.id">
+      <li v-for="item in displayPeople" :key="item.id">
         {{ item.name }}
+        <a v-bind:href="item.homeworld">Home world</a>
       </li>
     </ul>
+
+    <h3>Search people</h3>
+    <input v-on:input="search($event, 'Result')" type="text" v-on:keyup.enter="entering()">
 
     <i>
       {{ counter }}
     </i>
 
-    <button @click="increment">Increment</button>
+    <p v-once>
+      Once:
+      {{ counter }}
+    </p>
+
+    <h3>Add</h3>
+    <form v-on:submit.prevent="saveOne()">
+      <input type="text">
+      <button>New one</button>
+    </form>
+
+    <button @click.="increment(12)">Increment</button>
   </div>
 </template>
 
@@ -34,20 +51,35 @@ export default {
       title: 'Star wars people',
       subTitle: 'Amazing',
       counter: 0,
-      people: []
+      htmlContent: '<b><i>Pretty !</i></b>',
+      people: [],
+      displayPeople: []
     }
   },
   created () {
     this.fetchData()
   },
   methods: {
-    increment () {
+    entering () {
+      alert(event.target.value)
+    },
+    saveOne () {
+    },
+    search (event, text) {
+      this.displayPeople = this.people.filter(item => item.name.includes(event.target.value))
+    },
+    testCalling () {
+      console.warn('Call here')
+    },
+    increment (number = 1) {
       console.info('increment')
-      this.counter++
+      console.warn('increment', this)
+      this.counter = this.counter + number
     },
     fetchData () {
       peopleStore.fetch().then(data => {
         this.people = data.results
+        this.displayPeople = this.people
       })
     }
   },
