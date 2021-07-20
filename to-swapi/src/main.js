@@ -1,4 +1,4 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import SimpleRouter from './routes/SimpleRouter.js'
 
-createApp(App).mount('#app')
+createApp(SimpleRouter).mount('#app')
